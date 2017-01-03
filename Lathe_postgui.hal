@@ -1,0 +1,13 @@
+net spindle-fb-filtered-abs-rpm => pyvcp.spindle-speed
+
+net spindle-at-speed       => pyvcp.spindle-at-speed
+
+
+#
+net sxp.x-button => pyvcp.x_led1
+net sxp.z-button => pyvcp.z_led3
+net sxp.select-jog-inc-0 => pyvcp.Increment_led1
+net sxp.select-jog-inc-1 => pyvcp.Increment_led2
+net sxp.select-jog-inc-2 => pyvcp.Increment_led3
+net sxp.select-jog-inc-3 => pyvcp.Increment_led4
+
