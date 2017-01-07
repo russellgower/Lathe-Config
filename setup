@@ -2,11 +2,11 @@
 #echo cape-universaln > /sys/devices/bone_capemgr.*/slots 2>/dev/null
 config-pin overlay cape-universal
 #config-pin overlay cape-univ-audio
-config-pin p9.27 qep
+config-pin p9.27 pruin 
 config-pin p9.42 in
 config-pin p9.41 in
-config-pin p9.91 qep
-config-pin p9.92 qep
+config-pin p9.91 pruin
+config-pin p9.92 pruin
 
 config-pin p9.14 out
 config-pin p9.24 out

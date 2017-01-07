@@ -14,12 +14,12 @@ loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[TRAJ]AX
 loadrt hal_bb_gpio output_pins=807,926,928,911,916,915 input_pins=814,808,930
 loadrt [PRUCONF](DRIVER) prucode=/usr/lib/linuxcnc/xenomai/pru_generic.bin [PRUCONF](CONFIG) halname=hpg
 
-loadrt hal_arm335xQEP encoders="eQEP2"
 
-loadrt abs      names=abs-speed
+loadrt abs      count=1
 loadrt near     names=spindle-at-speed-detect
-loadrt scale	names=spindle-scale
-loadrt lowpass	names=spindle-filter
+loadrt scale	count=1
+#loadrt lowpass	names=spindle-filter
+loadrt lowpass	count=1
 
 
 # ################################################
@@ -27,17 +27,17 @@ loadrt lowpass	names=spindle-filter
 # ################################################
 
 addf hpg.capture-position                   servo-thread
-addf eqep.update                            servo-thread
 addf bb_gpio.read                           servo-thread
 addf motion-command-handler                 servo-thread
 addf motion-controller                      servo-thread
 addf hpg.update              		    servo-thread
 addf bb_gpio.write                          servo-thread
 
-addf abs-speed                              servo-thread
+addf abs.0                                  servo-thread
 addf spindle-at-speed-detect                servo-thread
-addf spindle-scale		            servo-thread
-addf spindle-filter			    servo-thread
+addf scale.0     		            servo-thread
+#addf spindle-filter			    servo-thread
+addf lowpass.0				    servo-thread
 
 
 # ######################################################
@@ -63,32 +63,36 @@ net spindle-enable => bb_gpio.p9.out-16
 net spindle-brake => bb_gpio.p9.out-15
 
 # Spindle Feedback
-setp eQEP2.position-scale 4096
-setp eQEP2.capture-prescaler 4
-net spindle-position eQEP2.position => motion.spindle-revs
-net spindle-velocity eQEP2.velocity => motion.spindle-speed-in
-net spindle-index-enable eQEP2.index-enable <=> motion.spindle-index-enable
+
+setp hpg.encoder.00.chan.00.A-pin 4
+setp hpg.encoder.00.chan.00.B-pin 5
+setp hpg.encoder.00.chan.00.index-pin 6
+setp hpg.encoder.00.chan.00.scale 4096
+setp hpg.encoder.00.chan.00.counter-mode 0
+
+net spindle-position hpg.encoder.00.chan.00.position => motion.spindle-revs
+net spindle-velocity hpg.encoder.00.chan.00.velocity => motion.spindle-speed-in
+net spindle-index-enable hpg.encoder.00.chan.00.index-enable <=> motion.spindle-index-enable
 
 # Spindle At Speed
 net spindle-speed-cmd => spindle-at-speed-detect.in1
-net spindle-velocity => spindle-at-speed-detect.in2
+net scaled-spindle-velocity => spindle-at-speed-detect.in2
 net spindle-at-speed motion.spindle-at-speed <= spindle-at-speed-detect.out
-setp spindle-at-speed-detect.scale 1.01
+setp spindle-at-speed-detect.scale 1.03
 
 # PYVCP 
 
-setp spindle-scale.gain 60
-#setp spindle-filter.gain 0.010000
-setp spindle-filter.gain 1.0
-net spindle-velocity => spindle-filter.in
-net spindle-fb-filtered-rps      spindle-filter.out  => abs-speed.in
-#net spindle-velocity => abs-speed.in
-net spindle-fb-filtered-abs-rps  abs-speed.out      => spindle-scale.in
-net spindle-fb-filtered-abs-rpm  <= spindle-scale.out    
+setp lowpass.0.gain 0.01
+setp scale.0.gain 60
+net spindle-velocity => lowpass.0.in
+net filtered-spindle-velocity <= lowpass.0.out  => abs.0.in
+net absolute-spindle-velocity <= abs.0.out => scale.0.in
+net scaled-spindle-velocity <= scale.0.out 
 
 
 # ################
 # X [0] Axis
+
 # ################
 
 # axis enable chain

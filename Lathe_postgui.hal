@@ -1,5 +1,5 @@
-net spindle-fb-filtered-abs-rpm => pyvcp.spindle-speed
-
+#net spindle-fb-filtered-abs-rpm => pyvcp.spindle-speed
+net scaled-spindle-velocity <= scale.0.out => pyvcp.spindle-speed
 net spindle-at-speed       => pyvcp.spindle-at-speed
 
 

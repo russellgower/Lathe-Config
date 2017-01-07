@@ -6,10 +6,16 @@
                         <text>"Spindle Speed:"</text>
                         <font>("Helvetica",12)</font>
                 </label>
-                <bar>
+                <meter>
                         <halpin>"spindle-speed"</halpin>
-                        <max_>2500</max_>
-                </bar>
+                        <min_>0</min_>
+                        <max_>1200</max_>
+                        <majorscale>100</majorscale>
+                        <minorscale>25</minorscale>
+                        <region1>(0,750,"green")</region1>
+                        <region2>(750,1000,"yellow")</region2>
+                        <region3>(1000,1200,"red")</region3>
+                </meter>
                 <hbox>
                     <label>
                         <text>"Spindle-At-Speed:"</text>
