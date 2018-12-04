@@ -1,0 +1,26 @@
+(info: Normal Drilling)
+o<drill>sub
+#<Z_StartOfCut> = #1 (=1.00 Z Start of Cut)
+#<Z_EndOfCut> = #2 (Z End of Cut)
+#<FeedRate> = #3 (Feed)
+#<Spindle_RPM> = #4 (Spindle RPM)
+#<ToolNumber> = #5 (Tool Number)
+#<Coolant> = #6 (=8 Coolant 8 On 9 Off)
+#<Cycle> = #7 (=0 0=G81 1=G83)
+#<Peck> = #8 (=0 Peck Increment)
+
+G17 G21 G40 G61 G80
+T#<ToolNumber> M6
+G43 G7 
+
+; Drill the hole
+S#<Spindle_RPM> M3 M#<Coolant> F#<FeedRate>
+o110 if [#<Cycle> EQ 0]
+  G81 X0.000 Z#<Z_EndOfCut> R#<Z_StartOfCut>
+o110 else
+  G83 X0.000 Z#<Z_EndOfCut> R#<Z_StartOfCut> Q#<Peck>
+o110 endif
+;M5 M9
+; G53 G0 X0 Z0
+o<drill>endsub
+

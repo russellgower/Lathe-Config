@@ -8,9 +8,9 @@ o<id>sub
    #<Spring_Cuts> =  #5 (=0 Spring Cuts)
   #<Z_StartOfCut> =  #6 (=2.00 Z Start of Cut)
     #<Z_EndOfCut> =  #7 (=-0.5 Z End of Cut)
-  #<SurfaceSpeed> =  #8 (=100 Surface Speed M/Min)
-      #<FeedRate> =  #9 (=0.07 Feed mm/Rev)
-#<MaxSpindle_RPM> = #10 (=1000 MAX RPM)
+  #<SurfaceSpeed> =  #8 (=25 Surface Speed M/Min)
+      #<FeedRate> =  #9 (=20 Feed mm/Min)
+#<MaxSpindle_RPM> = #10 (=500 MAX RPM)
     #<ToolNumber> = #11 (=2 Tool Number)
        #<Coolant> = #12 (=8 Coolant 8=On 9=Off)
 
@@ -18,7 +18,6 @@ T#<ToolNumber> M6
 ; G43: toollength offset
 ; G7:  diameter mode
 ; G96: constant surface speed
-G95
 G43 G7 G96 D#<MaxSpindle_RPM> S#<SurfaceSpeed>
 
 ; Turn the OD
@@ -50,7 +49,7 @@ o102 while [#<Spring_Cuts> gt 0]
 o102 endwhile
 
 G0 X[#<Current-Diameter>]
-;M5 M9             ; stop spindle, all coolant off
+M5 M9             ; stop spindle, all coolant off
 Z#<Z_StartOfCut>
 ;G49               ; cancel tool length offset
 ;G53 G0 X0 Z0      ; move in machine coordinates

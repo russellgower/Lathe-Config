@@ -5,14 +5,14 @@
 
 o<face>sub
 #<stock-diameter> = #1 (=50.0 Stock Diameter)
-#<finish-diameter> = #2 (=0.0 Small Diameter)
-#<cut-depth> = #3 (=0.250 Cut Depth)
+#<finish-diameter> = #2 (=5.0 Small Diameter)
+#<cut-depth> = #3 (=0.200 Cut Depth)
 #<start-z> = #4 (=0.000 Start Z)
-#<end-z> = #5 (=-0.250 End Z)
-#<sfm> = #6 (=100 Surface Speed M/Min)
+#<end-z> = #5 (=-0.020 End Z)
+#<sfm> = #6 (=80 SFM)
 #<tool> = #7 (=1 Tool)
-#<max-rpm> = #8 (=1000 Max RPM)
-#<feed-rate> = #9 (=0.07 Feed mm/Rev)
+#<max-rpm> = #8 (=500 Max RPM)
+#<feed-rate> = #9 (=50 Feed mm/Min)
 #<coolant>= #10 (=8 Coolant 8 On 9 Off)
 #<setZzero>= #11 (=0 Set Z0 0=No 1=Yes)
 
@@ -22,7 +22,6 @@ G18
 T#<tool> M6
 G43 
 G7 G96 D#<max-rpm> S#<sfm>
-G95
 
 M3 M#<coolant>
 
@@ -45,7 +44,7 @@ Z[#<current-z>+#5410+#5410]
 G0 X[#<stock-diameter>+0.5]
 o100 endwhile
 
-;M5 M9
+M5 M9
 
 ; set Z zero to end of stock
 o110 if [#<setZzero> EQ 1]

@@ -16,7 +16,6 @@ o<taper-od>sub
      #<Final_Cut> =     #8 (=.125 Final Cut)
      #<Fin_ Feed> =     #9 (=10 Final cut speed)
      #<Spring_Cuts> =   #10 (=0 Spring Cuts)
-     #<tool> =          #11 (=1 )
 
 #<Large_Diam_F> = #<Stock_Diam>
 #<Small_Diam_F> = #<Small_Diam>
@@ -37,7 +36,7 @@ G94 (units/min feed rate)
 G54 (Coordinant system 1 default)
 G7  (diameter mode)
 G64 p.001 q.001 (set path tolerance)
-t#<tool>m6g43
+t1m6g43
 ; if Z End of Cut is greater than Z Start of Cut do not run
 o201 if [#<End_z> gt #<Start_z>]
 (debug, Z End of Cut #<End_z># greater than Z Start of Cut #<Start_z>)
@@ -92,7 +91,7 @@ o102 while [#<Spring_Cuts> gt 0]
    #<Spring_Cuts> = [#<Spring_Cuts> -1]
 o102 endwhile
 
-;M5 ; stop spindle
+M5 ; stop spindle
 G0 Z #<Start_z>
 
 o<taper-od>endsub

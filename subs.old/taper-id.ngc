@@ -37,7 +37,7 @@ G1 X[#<diameter> - 0.2]
 G0 Z[#<z-start> + .2]
 o100 endwhile
 
-;M5 M9
+M5 M9
 G0 Z[#<z-start> + .1]
 G40 G97
 ;G53 G0 X0.000 Z0.000

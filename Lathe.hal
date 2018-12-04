@@ -11,7 +11,7 @@ loadrt tp
 
 # motion controller, get name and thread periods from ini file
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[TRAJ]AXES tp=tp kins=trivkins
-loadrt hal_bb_gpio output_pins=807,926,928,911,916,915 input_pins=814,808,930
+loadrt hal_bb_gpio output_pins=807,926,928,911,916,915 input_pins=814,808,930,818
 loadrt [PRUCONF](DRIVER) prucode=/usr/lib/linuxcnc/xenomai/pru_generic.bin [PRUCONF](CONFIG) halname=hpg
 
 
@@ -43,6 +43,11 @@ addf lowpass.0				    servo-thread
 # ######################################################
 # Axis-of-motion Specific Configs (not the GUI)
 # ######################################################
+
+########
+# Probe
+########
+net probe-in bb_gpio.p8.in-18 => motion.probe-input
 
 # ################
 # Spindle

@@ -1,23 +1,26 @@
-(info: outside diameter)
-o<od> sub
+; Author: jthornton
+
+(info: outside diameter - Units/Rev)
+o<od2> sub
 #<Material_Dia> =  #1 (=50 Material Diameter)
    #<Final_Dia> =  #2 (=20 Final Diameter)
    #<Depth_Cut> =  #3 (=0.500 Depth of Cut)
-#<SurfaceSpeed> =  #4 (=100 Surface Speed M/Min)
-    #<FeedRate> =  #5 (=0.07 Feed mm/Rev )
-     #<Max_RPM> =  #6 (=1000 Max Spindle RPM)
-  #<Z_EndOfCut> =  #7 (=-0.5 End of Cut)
-#<Z_StartOfCut> =  #8 (=2.0 Start of Cut)
- #<ToolNumber>  =  #9 (=1 Tool)
-     #<Coolant> = #10 (=8 Flood=8, Off=9)
-    #<Chip_Cut> = #11 (=0.000 Chip mm)
+   #<Final_Cut> =  #4 (=0.000 Final Cut)
+#<SurfaceSpeed> =  #5 (=100 Surface Speed M/Min)
+    #<FeedRate> =  #6 (=0.07 Feed mm/Rev )
+     #<Max_RPM> =  #7 (=500 Max Spindle RPM)
+  #<Z_EndOfCut> =  #8 (=-0.5 End of Cut)
+#<Z_StartOfCut> =  #9 (=2.0 Start of Cut)
+ #<RToolNumber> = #10 (=1 Roughing Tool)
+ #<FToolNumber> = #11 (=1 Finishing Tool)
+     #<Coolant> = #12 (=8 Flood=8, Off=9)
+    #<Chip_Cut> = #13 (=1.000 Chip mm)
 
-T#<ToolNumber> M6
+T#<RToolNumber> M6
 ; G43: toolength offset
 ; G7:  diameter mode
 ; G96: constant surface speed
 ; G95: feed in units/rev
-; G21: mm units
 G21
 G43 G7 G96 D#<Max_RPM> S#<SurfaceSpeed>
 G95
@@ -49,13 +52,15 @@ O103 endwhile
 O102 else
        G1 Z#<Z_EndOfCut> F#<FeedRate>
 O102 endif
+
+
        G0 X[#<Current_Dia>+0.50]
        Z#<Z_StartOfCut>
 o100 endwhile
 
-G0 X[#<Current_Dia>+1.00]
-;M5 M9               ; stop spindle, all coolant off
+G0 X[#<Current_Dia>+0.025]
+M5 M9               ; stop spindle, all coolant off
 Z#<Z_StartOfCut>
-;G49                 ; cancel tool length offset compensation
+G49                 ; cancel tool length offset compensation
 ;G53 G0 X0 Z0        ; move in machine coordinates
-o<od> endsub
+o<od2> endsub

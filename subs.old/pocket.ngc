@@ -7,8 +7,8 @@ o<pocket>sub
          #<End_X> =  #4 (=10.0 End Diameter)
         #<Radius> =  #5 (=2.0 Bottom Radius)
      #<Depth_Cut> =  #6 (=0.200 Depth of Cut)
-  #<SurfaceSpeed> =  #7 (=100 Surface Speed M/Rev)
-      #<FeedRate> =  #8 (=0.07 Feed mm/Rev)
+  #<SurfaceSpeed> =  #7 (=25 Surface Speed M/Min)
+      #<FeedRate> =  #8 (=20 Feed mm/Min)
 #<MaxSpindle_RPM> =  #9 (=500 MAX RPM)
     #<ToolNumber> = #10 (=2 Tool Number)
        #<Coolant> = #11 (=8 Coolant 8=On 9=Off)
@@ -18,10 +18,10 @@ T#<ToolNumber> M6
 ; G7:  diameter mode
 ; G96: constant surface speed
 G18
-G95
 G43 G7 G96 D#<MaxSpindle_RPM> S#<SurfaceSpeed>
 G64 P0.01
 
+; Turn the OD
 M3 M#<Coolant> ; spindle cw, coolant on/off:w
 
 #<Cycles> = [[#<Start_Z> - #<End_Z>] / #<Depth_Cut> ]
@@ -32,13 +32,10 @@ G1 Z#<Start_Z> F#<FeedRate>
 
 o100 while [#<Pass> le #<Cycles>]
 	#<Target_Z> = [ #<Start_Z> - [ #<Depth_Cut> * #<Pass> ]]
-	;#<Target_X> = [[ #<End_X> - #<Radius> - [[ #<Cycles> - #<Pass> ] * #<Depth_Cut> ]]]
-	#<Target_X> = [ #<End_X> - #<Radius>] 
-;(debug, pass=#<Pass> tZ=#<Target_Z> tX=#<Target_X>)
-
-	G1 X#<Target_X>
-	G0 Z[#<Target_Z> + 0.5]
+	#<Target_X> = [[ #<End_X> - #<Radius> - [[ #<Cycles> - #<Pass> ] * #<Depth_Cut> ]]]
+(debug, pass=#<Pass> tZ=#<Target_Z> tX=#<Target_X>)
 	G1 Z#<Target_Z>
+	G1 X#<Target_X>
 
 O101	if [ #<Radius> gt 0 ]
 		#<arcX> = [ #<Target_X> + #<Radius> ]
@@ -46,18 +43,17 @@ O101	if [ #<Radius> gt 0 ]
 		(debug, x=#<arcX> z=#<arcZ>)
 		G2 x#<arcX> z#<arcZ> R#<Radius>
 O101	endif
-;(debug, arcZ = #<arcZ> Start_Z = #<Start_Z>)
-;O102	if [#<Target_Z> + #<Radius> lt #<Start_Z>]
-;		G1 Z#<Start_Z>
-;O102	endif
-		
-	G0 X#<Start_X> Z[#<Target_Z> + 0.5]
+(debug, arcZ = #<arcZ> Start_Z = #<Start_Z>)
+O102	if [#<Target_Z> + #<Radius> lt #<Start_Z>]
+		G1 Z#<Start_Z>
+O102	endif
+	
+	G0 X#<Start_X>
 	#<Pass> = [#<Pass> + 1]
 o100 endwhile
 
-G0 X#<Start_X> Z#<Start_Z>
 
-;M5 M9             ; stop spindle, all coolant off
-;G49               ; cancel tool length offset
+M5 M9             ; stop spindle, all coolant off
+G49               ; cancel tool length offset
 
 o<pocket>endsub

@@ -9,7 +9,7 @@
 
 o<g76base> sub
        #<toolno> =  #1 (= 10)
-          #<rpm> =  #2 (= 275  Spindle RPM)
+          #<rpm> =  #2 (= 200  Spindle RPM)
 
            #<xi> =  #3 (=  0.5 X: Xi driveline)
            #<zi> =  #4 (= -0.5 Z: Zi driveline)
@@ -102,19 +102,15 @@ o<if70>    if [#<mode> EQ 7]
 o<if70>    else
              (debug, g76base: set G8 RADIUS mode)
 o<if70>    endif
-	(debug, g76base: G76 P#<p> Z#<z> I#<i> J#<j> R#<r> K#<k> Q#<q> H#<h> E#<e> L#<l>)
 o<if60>  endif
 
 o<loadtool> call [#<toolno>]
 g43
-g95
 M#<spindir> S#<rpm>
 
 G0 X#<xi> Z#<zi>
 
 G76 P#<p> Z#<z> I#<i> J#<j> R#<r> K#<k> Q#<q> H#<h> E#<e> L#<l>
-
-G0 X#<xi> Z#<zi>
 
 o<if80>  if [[#<_vmajor> GE 2.6] AND [#<verbose> GT 0]]
            (debug, g76base restoring mode to G #<restore_mode>)

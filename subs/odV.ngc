@@ -1,0 +1,67 @@
+(info: outside diameter V profile)
+o<odV> sub
+#<Material_Dia> =  #1 (=50 Material Diameter)
+   #<Final_Dia> =  #2 (=20 Final Diameter)
+   #<Depth_Cut> =  #3 (=0.500 Depth of Cut)
+  #<Side_Angle> =  #4 (=55 Degrees
+#<SurfaceSpeed> =  #5 (=100 Surface Speed M/Min)
+    #<FeedRate> =  #6 (=0.07 Feed mm/Rev )
+     #<Max_RPM> =  #7 (=1000 Max Spindle RPM)
+  #<Z_EndOfCut> =  #8 (=-0.5 End of Cut)
+#<Z_StartOfCut> =  #9 (=2.0 Start of Cut)
+ #<ToolNumber>  = #10 (=9 Tool)
+     #<Coolant> = #11 (=8 Flood=8, Off=9)
+
+T#<ToolNumber> M6
+; G43: toolength offset
+; G7:  diameter mode
+; G96: constant surface speed
+; G95: feed in units/rev
+; G21: mm units
+G21
+G43 G7 G96 D#<Max_RPM> S#<SurfaceSpeed>
+G95
+
+; Calculate the sides of the triangle
+#<Ta> = [[#<Material_Dia> -  #<Final_Dia>]/2]
+#<TB> = [ 90 - #<Side_Angle> ]
+#<Tb> = [[ <Ta> * SIN[#<TB>] ] / SIN[#<Side_Angle>] ]
+
+; Calculate the gap betten the triangles
+#<mid> = [ ABS[ #<Z_EndOfCut> - #<Z_StartOfCut> ] - #<Tb> - #<Tb> ]
+
+; Turn the OD
+M3 M#<Coolant> ; spindle cw, coolant on/off
+G0 X#<Material_Dia> Z#<Z_StartOfCut>
+#<Current_Dia>=#<Material_Dia>
+
+o100 while [#<Current_Dia> gt #<Final_Dia>]
+
+O101   if [#<Current_Dia>-#<Depth_Cut> gt #<Final_Dia>]
+         #<Current_Dia>=[#<Current_Dia>-#<Depth_Cut>]
+O101   else
+         #<Current_Dia>=#<Final_Dia>
+O101   endif
+
+; ReCalculate the sides of the triangle
+       #<CurTa> = [[#<Current_Dia> -  #<Final_Dia>]/2]
+       #<CurTb> = [[ <CurTa> * SIN[#<TB>] ] / SIN[#<Side_Angle>] ]
+
+; Calculate cut
+       #<Current_Z> = [ #<Z_StartOfCut> - #<Tb> + #<CurTb> ]
+       #<End_Z> = [ #<Z_EndOfCut> + #<Tb> - #<CurTb ]
+
+       G1 Z#<Current_Z> F#<FeedRate>
+       G1 X#<Current_Dia>
+       G1 Z#<End_Z>
+
+       G0 X[#<Current_Dia>+0.50]
+       G0 Z[#<Current_Z>-0.5]
+o100 endwhile
+
+G0 X[#<Material_Dia>+1.00]
+;M5 M9               ; stop spindle, all coolant off
+Z#<Z_StartOfCut>
+;G49                 ; cancel tool length offset compensation
+;G53 G0 X0 Z0        ; move in machine coordinates
+o<odV> endsub

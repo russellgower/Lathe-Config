@@ -1,0 +1,33 @@
+(info: Parting off)
+
+o<part>sub
+#<stock-diameter>  = #1 (=50.0 Stock Diameter)
+#<finish-diameter> = #2 (=50.0 Small Diameter)
+#<start-z>         = #3 (=0.000 Z)
+#<sfm>             = #4 (=50 Surface Speed M/Min)
+#<tool>            = #5 (=28 Tool)
+#<max-rpm>         = #6 (=1000 Max RPM)
+#<feed-rate>       = #7 (=0.06 Feed mm/Rev)
+#<coolant>         = #8 (=8 Coolant 8 On 9 Off)
+
+; SETUP TOOL
+G21
+G18
+T#<tool> M6
+G43 
+G7 G96 D#<max-rpm> S#<sfm>
+G95
+
+M3 M#<coolant>
+
+F#<feed-rate>
+G0 X[#<stock-diameter>+0.50] Z#<start-z>
+
+G1 X#<finish-diameter>
+
+G0 X[#<stock-diameter>+0.5]
+
+;M5 M9
+
+;G53 G0 X0 Z0
+o<part>endsub

@@ -8,7 +8,7 @@
 
 o<g76diam> sub
        #<toolno> =  #1 (= 10)
-          #<rpm> =  #2 (= 275  Spindle RPM)
+          #<rpm> =  #2 (= 200  Spindle RPM)
 
             #<i> =  #3 (= -0.03  I: offset NEG:external)
            #<zi> =  #4 (= -0.5   Z: Zi driveline)
@@ -29,7 +29,7 @@ o<g76diam> sub
 
 ; other:
       #<spindir> = #15 (=3 Dir: Right=3 Left=4)
-         #<mode> = #16 (=8 G7/G8 Radius=8 Diam=7)
+         #<mode> = #16 (=7 G7/G8 Radius=8 Diam=7)
       #<verbose> = #17 (=0 0:quiet,1:verbose)
 
 o<if1> if [#<majordiameter> LE #<minordiameter>]

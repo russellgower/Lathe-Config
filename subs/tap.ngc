@@ -1,0 +1,42 @@
+(info: Rigid Tapping)
+
+o<tap>sub
+#<thread-type> = #1 (=0 0=TPI 1=MM)
+#<thread> = #2 (TPI/Pitch)
+#<Z_Start> = #3 (=1.0 Z Clearance)
+#<T_Depth> = #4 (End of Thread)
+#<P_Depth> = #5 (Peck Depth)
+#<RPM> = #6 (Spindle RPM)
+#<ToolNumber> = #7 (Tool Number)
+#<Coolant> = #8 (=8 Coolant 8 On 9 Off)
+
+G7 G17 G20 G40 G80
+T#<ToolNumber> M6 G43
+
+o110 if [#<thread-type> EQ 0]
+  #<pitch> = [1 / #<thread>]
+  G20
+o110 else
+  #<pitch> = #<thread>
+  G21
+o110 endif
+
+
+; Tap the Hole
+#<peck>=[#<Z_Start>-#<P_Depth>]
+o120 if [#<thread-type> EQ 0 OR #<thread-type> EQ 1]
+  S#<RPM> M3 M#<Coolant>
+o130 while [#<peck> ge #<T_Depth>]
+  G0 X0.000 Z#<Z_Start>
+  G33.1 X0.000 Z#<peck> K#<pitch>
+  #<peck>=[#<peck>-#<P_Depth>]
+o130 endwhile
+  M5 M9
+;  G53 G0 X0 Z0
+o120 else
+  (msg, you dufus you didn't use a proper thread type)
+o120 endif
+
+; Restore to normal units
+G21
+o<tap>endsub
